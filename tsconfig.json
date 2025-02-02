@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "lib": ["ES2015", "DOM"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "jsx": "react-jsx" // or "react" for older React versions (before React 17)
+  },
+  "include": ["src/**/*"]
+}
