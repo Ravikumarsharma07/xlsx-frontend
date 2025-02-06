@@ -65,7 +65,7 @@ const Navbar = () => {
         <a href="/">
           <img
             className="w-[140px] md:w-[155px] pb-2"
-            src="/public/logo.png"
+            src="/logo.png"
             alt="company logo"
           />
         </a>
