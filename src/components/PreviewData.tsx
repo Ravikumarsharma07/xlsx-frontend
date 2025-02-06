@@ -19,7 +19,7 @@ const PreviewData = ({columnNames ,filesToRender, handleDelete}) => {
                 </p>
               );
             })}
-          <p className="w-[100px]">Action</p>
+          <p className="w-[100px]">Delete</p>
         </div>
 
         {/* values of columns  */}

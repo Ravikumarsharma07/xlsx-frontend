@@ -10,7 +10,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
-import { parse, format } from 'date-fns';
 
 
 const DataRow = ({ data, columns, handleDelete}: any) => {  
@@ -19,29 +18,13 @@ const DataRow = ({ data, columns, handleDelete}: any) => {
     values.push(data[key]);
   }
   
-  if(data.Amount){    
-    try {
-      data.Amount = data.Amount.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
-  if(data.Date){    
-    try {
-      const parsedDate = parse(data.Date, "dd-MM-yyyy", new Date());
-      const formattedDate = format(parsedDate, "dd-MM-yyyy");
-      data.Date = formattedDate
-    } catch (error) {
-      console.log(error);      
-    }
-  }
   return (
     <>
       <div
         className={`text-lg grid grid-flow-col w-max min-w-full border-b border-[#8a8a8a] py-3 bg-[white] hover:bg-[#f7f4f4] overflow-x-visible`}
         >
-        <p className="text-[16px] pl-3 w-[100px]">{data.__rowNum__+"." || "not found"}</p>
+        <p className="text-[16px] pl-3 w-[100px]">{data.__rowNum__+"." || "NA"}</p>
         {values.map((value, index) => { 
           return (
             <>

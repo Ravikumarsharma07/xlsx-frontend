@@ -19,4 +19,5 @@ export default defineConfig({
       "@": path.resolve(process.cwd(), "src"), // Use `process.cwd()` instead of `__dirname`
     },
   },
+  
 })

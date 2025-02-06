@@ -1,14 +1,15 @@
 import { ArrowLeftCircle, ArrowRightCircle } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import * as xlsx from "xlsx";
 import DataTableHeader from "./DataTableHeader";
 import useToast from "@/hooks/useToast";
 import PreviewData from "./PreviewData";
+import JsonFileContext from "@/context/JsonFileContext";
 
 const DataTable = ({ data }) => {
   // storing all the sheets in array format inside a array and making a currentSheet for taking reference to render correct sheet
 
-  const [jsonFile, setJsonFile] = useState([]);
+  const {jsonFile, setJsonFile} = useContext(JsonFileContext)
   const [filesToRender, setFilesToRender] = useState([]);
   const [currentSheet, setCurrentSheet] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
@@ -34,6 +35,8 @@ const DataTable = ({ data }) => {
         finalData.push(parsedData);
       });
       setJsonFile((prev) => finalData);
+      console.log(jsonFile);
+      
     };
     try {
       reader.readAsArrayBuffer(data);

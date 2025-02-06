@@ -1,16 +1,7 @@
 import useToast from "@/hooks/useToast";
-import axios from "axios";
-import { ArrowDownUp, Loader, Sheet, Trash2 } from "lucide-react";
+import { ArrowDownUp, Loader, Sheet } from "lucide-react";
 import "es6-promise/auto";
 import { useState } from "react";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from "@mui/material";
-import ErrorModal from "./ErrorModal";
 
 const DataTableHeader = ({
   setIsSheetVisible,
@@ -21,55 +12,32 @@ const DataTableHeader = ({
   sheetNamesArr,
 }) => {
   const [isImportingData, setIsImpoortingData] = useState(false);
-  const [isColumnsError, setIsColumnsError] = useState(false);
-  const [columnsError, setColumnsError] = useState([]);
 
-  const [isValidationError, setIsValidationError] = useState(false)
-  const [validationErrors, setValidationErrors] = useState([])
-
-  const handleUpload = async () => {
+  const handleSownload = async () => {
     setIsImpoortingData(true);
-    setIsColumnsError(false);
-    
-    setIsValidationError(false);
+    setTimeout(() => {
+    setIsImpoortingData(false);
+    useToast("File downloaded", true)
+    }, 1000);
 
     try {
-      const response = await axios.post("/api/upload", {
-        jsonFile,
-        sheetNamesArr,
-      });
+      const jsonString = JSON.stringify(jsonFile, null, 2);
+      const blob = new Blob([jsonString], { type: "application/json" });
 
-      // checking for column error, if any return and show the error 
-      if (response.data.columnError) {
-        setIsColumnsError(true);
-        setColumnsError(response.data.columnError);
-        return
-      }
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "data.json";
 
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-      useToast(response.data.message || "Successful", true)
-
-      if(response.data.validationErrors){
-        setIsValidationError(true)
-        setValidationErrors(response.data.validationErrors)
-        return
-      }
-
-      
-      if (response.data.noErrors) {
-        useToast("File successfully saved in database", true)
-      }
     } catch (error) {
-      useToast(error.response.data.message || "Error while uploading files", false);
       console.log(error);
-    } finally {
-      setIsImpoortingData(false);
-    }
+      useToast("Error while converting file", false)
+    } 
   };
-  const onClose = () => {
-    setIsColumnsError(false);
-    setIsValidationError(false)
-  };
+
   return (
     <>
       <header className="flex-between">
@@ -102,51 +70,21 @@ const DataTableHeader = ({
         </div>
 
         {isImportingData ? (
-          <button className="flex-center gap-2 w-[130px] h-max py-2 opacity-80 bg-blue-600 text-lg text-white/80 cursor-not-allowed rounded-[8px]">
-            Import <Loader size={15} className="animate-spin" />
+          <button
+            onClick={handleSownload}
+            className="flex-center gap-2 h-10 w-[130px] py-2 opacity-80 bg-blue-600 text-lg text-white/80 cursor-not-allowed rounded-[8px]"
+          >
+            <Loader size={22} className="animate-spin" />
           </button>
         ) : (
           <button
-            onClick={handleUpload}
-            className="h-max w-[130px] py-2 px-10 bg-blue-500 hover:bg-blue-600 text-xl text-white rounded-[8px]"
+            onClick={handleSownload}
+            className="w-[130px] h-10 bg-blue-500 hover:bg-blue-600 text-xl text-white rounded-[8px]"
           >
-            Import
+            Convert
           </button>
         )}
       </header>
-
-
-        <ErrorModal open={isValidationError} onClose={onClose} errors={validationErrors}/>
-
-        {/* modal  for showing mandatory columns error only */}
-      <Dialog open={isColumnsError} onClose={onClose} fullWidth maxWidth="md">
-        <DialogTitle className="text-red-500">
-          Mandatory columns are missing, please add columns before importing
-        </DialogTitle>
-        <DialogContent>
-          <div className="mt-4 ml-4">
-            <table className="w-full border-collapse border border-gray-300">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="border border-gray-300 px-4 py-2 text-start">Error Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              {columnsError?.map((error, index) => (
-                <tr key={index} className="border border-gray-300">
-                  <td className="border border-gray-300 px-4 py-2">{error.error}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          </div>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose} color="primary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
     </>
   );
 };
