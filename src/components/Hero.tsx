@@ -70,7 +70,7 @@ function Hero() {
       <p className=" text-blue-400 mt-4 px-[3%] md:px-[5%]">{selectedFile}</p>
       <p className="text-red-500 mt-1 px-[3%] md:px-[5%]">{errorMessage}</p>
 
-      {jsonFile.length > 0 ? <DataTable data={files} /> : ""    }
+      {files || jsonFile.length > 0 ? <DataTable data={files} /> : ""    }
 
     </>
   );
